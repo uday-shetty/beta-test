@@ -43,18 +43,6 @@ if [ -z "$DTR_PUBLIC_FQDN" ]; then
     exit 1
 fi
 
-# Install Python utilities
-
-#apt-get python python-dev linux-headers py-pip py-setuptools
-#apt-get -y install python-pip
-#pip install --upgrade pip
-#apt-get install npm
-#npm install -g azure-cli
-#pip install msrest
-#pip install msrestazure
-#pip install --pre azure
-#pip install -v azure-storage==0.30.0
-
 
 # 3RD SECTION - INSTALL DOCKER EE
 
@@ -77,7 +65,19 @@ apt-get install -y docker-ee
 
 sleep 10
 
-# 4TH SECTION - INSTALL UCP
+# 4TH SECTION - run meta container
+docker run \
+  --label com.docker.editions.system \
+  --log-driver=json-file \
+  --log-opt max-size=50m \
+  --name=meta-azure \
+  --restart=always \
+  -d \
+  -p $PRIVATE_IP:9024:8080 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  ushetty/meta-stack:latest metaserver -iaas_provider=azure
+
+# 5TH SECTION - INSTALL UCP
 
 echo "UCP_PUBLIC_FQDN=$UCP_PUBLIC_FQDN"
 service docker restart
@@ -105,7 +105,7 @@ docker run --rm --name ucp \
 sleep 30
 
 
-# 5TH SECTION - INSTALL DTR
+# 6TH SECTION - INSTALL DTR
 
 if [ -z "$UCP_NODE"]; then
   export UCP_NODE=$(docker node ls | grep mgr0 | awk '{print $3}');
