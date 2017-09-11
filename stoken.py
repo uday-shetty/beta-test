@@ -32,7 +32,7 @@ def get_key(sub_id, rg_name, sa_name, AppId, AppSecret, TenantId):
 
 def print_id(sa_key, sa_name):
     global TBL_NAME
-    tbl_svc = TableService(account_name=SA_NAME, account_key=sa_key)
+    tbl_svc = TableService(account_name=sa_name, account_key=sa_key)
     if not tbl_svc.exists(TBL_NAME):
         return False
     try:
@@ -56,7 +56,7 @@ def add_id(sub_id, rg_name, sa_name, manager_ip, AppId, AppSecret, TenantId):
     key = get_key(sub_id, rg_name, sa_name, AppId, AppSecret, TenantId)
     print("Key{}".format(key))
 
-    create_table(key, SA_NAME )
+    create_table(key, sa_name )
 
     tbl_svc = TableService(account_name=sa_name, account_key=key)
     try:
@@ -69,10 +69,9 @@ def add_id(sub_id, rg_name, sa_name, manager_ip, AppId, AppSecret, TenantId):
         print("exception while inserting Token ID")
         return False
 
-def create_table(sa_key, SA_NAME):
-    #global TBL_NAME, SA_NAME
+def create_table(sa_key, sa_name):
     global TBL_NAME
-    tbl_svc = TableService(account_name=SA_NAME, account_key=sa_key)
+    tbl_svc = TableService(account_name=sa_name, account_key=sa_key)
     try:
         # this will succeed only once for a given table name on a storage account
         tbl_svc.create_table(TBL_NAME, fail_on_exist=True)
