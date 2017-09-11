@@ -10,34 +10,27 @@ from azure.mgmt.compute import ComputeManagementClient
 from azure.mgmt.storage.models import StorageAccountCreateParameters
 from azure.storage.table import TableService, Entity
 
-#SUB_ID = os.environ['ACCOUNT_ID']
-#TENANT_ID = os.environ['TENANT_ID']
-#RG_NAME = os.environ['GROUP_NAME']
-#SA_NAME = os.environ['TOKEN_STORAGE_ACCOUNT']
-
 #Azure Table Name to store Token
 TBL_NAME = 'tokentable'
 
-def get_key(SUB_ID, RG_NAME, SA_NAME, APP_ID, APP_SECRET, TENANT_ID):
-    #global SUB_ID, TENANT_ID, RG_NAME, SA_NAME
+def get_key(sub_id, rg_name, sa_name, AppId, AppSecret, TenantId):
 
     cred = ServicePrincipalCredentials(
-        client_id=APP_ID,
-        secret=APP_SECRET,
-        tenant=TENANT_ID
+        client_id=AppId,
+        secret=AppSecret,
+        tenant=TenantId
     )
 
-    #resource_client = ResourceManagementClient(cred, SUB_ID)
-    storage_client = StorageManagementClient(cred, SUB_ID)
+    #resource_client = ResourceManagementClient(cred, sub_id)
+    storage_client = StorageManagementClient(cred, sub_id)
 
-    storage_keys = storage_client.storage_accounts.list_keys(RG_NAME, SA_NAME)
+    storage_keys = storage_client.storage_accounts.list_keys(rg_name, sa_name)
     storage_keys = {v.key_name: v.value for v in storage_keys.keys}
 
     return storage_keys['key1']
 
 
-def print_id(sa_key, SA_NAME):
-    #global SA_NAME, TBL_NAME
+def print_id(sa_key, sa_name):
     global TBL_NAME
     tbl_svc = TableService(account_name=SA_NAME, account_key=sa_key)
     if not tbl_svc.exists(TBL_NAME):
@@ -50,23 +43,22 @@ def print_id(sa_key, SA_NAME):
         return False
 
 
-def add_id(sub_id, rg_name, SA_NAME, manager_ip, AppId, AppSecret, TenantId):
-    #global  TBL_NAME, SA_NAME
+def add_id(sub_id, rg_name, sa_name, manager_ip, AppId, AppSecret, TenantId):
     global  TBL_NAME
     print("SUB ID{}".format(sub_id))
     print("RG_NAME{}".format(rg_name))
-    print("SA_NAME{}".format(SA_NAME))
+    print("SA_NAME{}".format(sa_name))
     print("MANAGER IP{}".format(manager_ip))
     print("App ID{}".format(AppId))
     print("App Secret {}".format(AppSecret))
     print("Tenant ID{}".format(TenantId))
 
-    key = get_key(sub_id, rg_name, SA_NAME, AppId, AppSecret, TenantId)
+    key = get_key(sub_id, rg_name, sa_name, AppId, AppSecret, TenantId)
     print("Key{}".format(key))
 
     create_table(key, SA_NAME )
 
-    tbl_svc = TableService(account_name=SA_NAME, account_key=key)
+    tbl_svc = TableService(account_name=sa_name, account_key=key)
     try:
         # this upsert operation should always succeed
     	token_id = {'PartitionKey': 'token', 'RowKey': '1', 'token_ip': manager_ip}
