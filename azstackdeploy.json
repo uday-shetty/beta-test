@@ -332,20 +332,6 @@
                             "sourceAddressPrefix": "*",
                             "sourcePortRange": "*"
                         }
-                    },
-                    {
-                        "name": "swarmtoken",
-                        "properties": {
-                            "access": "Allow",
-                            "description": "Allow Token",
-                            "destinationAddressPrefix": "*",
-                            "destinationPortRange": "9024",
-                            "direction": "Inbound",
-                            "priority": 209,
-                            "protocol": "Tcp",
-                            "sourceAddressPrefix": "*",
-                            "sourcePortRange": "*"
-                        }
                     }
                 ]
             }
@@ -900,7 +886,8 @@
                 }
             },
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('manager').vmNamePrefix, copyindex())]"
+                "[concat('Microsoft.Compute/virtualMachines/', variables('manager').vmNamePrefix, copyindex())]",
+		"[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
             ]
         },
         {
@@ -930,7 +917,8 @@
                 }
             },
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('worker').vmNamePrefix, copyindex())]"
+                "[concat('Microsoft.Compute/virtualMachines/', variables('worker').vmNamePrefix, copyindex())]",
+		"[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
             ]
         }
     ],
