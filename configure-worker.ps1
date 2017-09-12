@@ -37,15 +37,6 @@ function Disable-RealTimeMonitoring () {
     Set-MpPreference -DisableRealtimeMonitoring $true
 }
 
-#function Install-Container () {
-#    # add Windows Container image
-#    Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
-#    Install-Package -Name docker -ProviderName DockerMsftProvider
-#    Restart-Computer -Force
-#    docker pull microsoft/windowsservercore
-#}
-
-
 function Install-LatestDockerEngine () {
     #Get Docker Engine from Master Builds
     Invoke-WebRequest -Uri "https://download.docker.com/components/engine/windows-server/17.06/docker-17.06.1-ee-2.zip" -OutFile "docker.zip"
