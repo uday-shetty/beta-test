@@ -32,7 +32,8 @@ function Join-Swarm() {
 
 		# We then get the HTTP code as an integer.
 		$HTTP_Status = [int]$HTTP_Response.StatusCode
-		Write-Host "HTTP Code inside loop: $HTTP_Status"
+		Write-Host "HTTP Code: $HTTP_Status"
+		$HTTP_Response.Close()
 
 		if ($HTTP_Status -eq 200) {
 			break
