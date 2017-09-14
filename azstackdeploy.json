@@ -14,7 +14,13 @@
         "adminUsername": {
             "type": "string",
             "metadata": {
-                "description": "Admin username"
+                "description": "Admin username to ssh into VM"
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Admin password for VM and UCP"
             }
         },
         "ucpVersion": {
@@ -45,32 +51,53 @@
                 "description": "URL to download Docker EE Version (obtained from https://store.docker.com)"
             }
         },
-        "adminPassword": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Admin password"
-            }
-        },
         "sshPublicKey": {
             "type": "string",
             "metadata": {
                 "description": "SSH public key"
             }
         },
-        "vmSize": {
-            "defaultValue": "Standard_D2_v2",
-            "type": "string",
-            "metadata": {
-                "description": "Size of the VM"
-            }
-        },
-        "managerCount": {
+	"managerCount": {
             "defaultValue": 1,
             "type": "int",
-	    "minValue": 1,
+            "minValue": 1,
             "maxValue": 1,
             "metadata": {
                 "description": "Number of manager nodes"
+            }
+        },
+        "managervmSize": {
+	    "allowedValues": [
+                "Standard_A0",
+                "Standard_A1",
+                "Standard_A2",
+                "Standard_A3",
+                "Standard_A4",
+                "Standard_A5",
+                "Standard_A6",
+                "Standard_A7",
+                "Standard_D1",
+                "Standard_D2",
+                "Standard_D3",
+                "Standard_D4",
+                "Standard_D11",
+                "Standard_D12",
+                "Standard_D13",
+                "Standard_D14",
+                "Standard_D1_v2",
+                "Standard_D2_v2",
+                "Standard_D3_v2",
+                "Standard_D4_v2",
+                "Standard_D5_v2",
+                "Standard_D11_v2",
+                "Standard_D12_v2",
+                "Standard_D13_v2",
+                "Standard_D14_v2"
+            ],
+            "defaultValue": "Standard_D2_v2",
+            "type": "string",
+            "metadata": {
+                "description": "Size of the Manager VM"
             }
         },
         "workerCount": {
@@ -79,9 +106,43 @@
 	    "minValue": 1,
             "maxValue": 3,
             "metadata": {
-                "description": "Number of worker nodes"
+                "description": "Number of Worker nodes"
             }
         },
+	"workervmSize": {
+            "allowedValues": [
+                "Standard_A0",
+                "Standard_A1",
+                "Standard_A2",
+                "Standard_A3",
+                "Standard_A4",
+                "Standard_A5",
+                "Standard_A6",
+                "Standard_A7",
+                "Standard_D1",
+                "Standard_D2",
+                "Standard_D3",
+                "Standard_D4",
+                "Standard_D11",
+                "Standard_D12",
+                "Standard_D13",
+                "Standard_D14",
+                "Standard_D1_v2",
+                "Standard_D2_v2",
+                "Standard_D3_v2",
+                "Standard_D4_v2",
+                "Standard_D5_v2",
+                "Standard_D11_v2",
+                "Standard_D12_v2",
+                "Standard_D13_v2",
+                "Standard_D14_v2"
+            ],
+            "defaultValue": "Standard_D2_v2",
+            "type": "string",
+            "metadata": {
+                "description": "Size of the Worker VM"
+            }
+	},
         "dnsFqdnSuffix": {
             "defaultValue": "cloudapp.azurestack.external",
             "allowedValues": [
@@ -169,6 +230,7 @@
         "nsgName": "[concat(variables('prefix'), '_nsg')]",
         "sshKeyPath": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
 	"nicName": "[concat(variables('manager').nicNamePrefix, '0')]",
+	"scriptDependency": "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(variables('manager').vmNamePrefix, '0'), 'mgr_scriptextension')]",
         "vhdContainerName": "vhd"
     },
     "resources": [
@@ -744,7 +806,7 @@
                     "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('manager').availabilitySetName)]"
                 },
                 "hardwareProfile": {
-                    "vmSize": "[parameters('vmSize')]"
+                    "vmSize": "[parameters('managervmSize')]"
                 },
                 "osProfile": {
                     "computerName": "[concat(variables('manager').vmNamePrefix, copyIndex())]",
@@ -814,7 +876,7 @@
                     "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('worker').availabilitySetName)]"
                 },
                 "hardwareProfile": {
-                    "vmSize": "[parameters('vmSize')]"
+                    "vmSize": "[parameters('workervmSize')]"
                 },
                 "osProfile": {
                     "computerName": "[concat(variables('worker').vmNamePrefix, copyIndex())]",
@@ -918,7 +980,8 @@
             },
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', variables('worker').vmNamePrefix, copyindex())]",
-		"[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+		"[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
+		"[variables('scriptDependency')]"
             ]
         }
     ],
