@@ -39,7 +39,7 @@ function Join-Swarm() {
 		}
 		Start-Sleep -Seconds 20
 	
-	} while (i -le 10)
+	} while ($i -le 10)
 	$Stream = ([System.Net.WebRequest]::Create($Url)).GetResponse().GetResponseStream()
 	$StreamReader = new-object System.IO.StreamReader $Stream
 	$Token = $StreamReader.ReadToEnd()
