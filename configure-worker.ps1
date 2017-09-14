@@ -16,9 +16,30 @@ function Join-Swarm() {
     try
     {
 	Write-Host "Leader IP: $LeaderIP"
+
 	$Url = -join("http://", $LeaderIP, ":9024/token/worker/")
 	Write-Host "Using URL: $Url"
-	Start-Sleep -Seconds 30
+	$i = 1
+	do {
+		$i
+		$i++
+
+		# First we create the request.
+		$HTTP_Request = [System.Net.WebRequest]::Create($Url)
+
+		# We then get a response from the site.
+		$HTTP_Response = $HTTP_Request.GetResponse()
+
+		# We then get the HTTP code as an integer.
+		$HTTP_Status = [int]$HTTP_Response.StatusCode
+		Write-Host "HTTP Code inside loop: $HTTP_Status"
+
+		if ($HTTP_Status -eq 200) {
+			break
+		}
+		Start-Sleep -Seconds 20
+	
+	} while (i -le 10)
 	$Stream = ([System.Net.WebRequest]::Create($Url)).GetResponse().GetResponseStream()
 	$StreamReader = new-object System.IO.StreamReader $Stream
 	$Token = $StreamReader.ReadToEnd()
