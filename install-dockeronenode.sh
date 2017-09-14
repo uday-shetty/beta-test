@@ -75,7 +75,7 @@ docker run \
   -d \
   -p $PRIVATE_IP:9024:8080 \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  ushetty/meta-stack:latest metaserver -iaas_provider=azure
+  docker4x/meta-azure:stack metaserver -iaas_provider=azure
 
 # 5TH SECTION - INSTALL UCP
 
