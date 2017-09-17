@@ -91,7 +91,7 @@ docker run \
 
 if [ "$DOCKER_LICENSE" != "" ]; then
     	LIC_FILE=/tmp/docker_subscription.lic
-    	echo "$DOCKER_LICENSE" >> $LIC_FILE
+	echo -n  "$UCP_LICENSE" | base64 -d >> $LIC_FILE
 	jq -e '.|{key_id}' $LIC_FILE >> /dev/null
        	if [[ $? -eq 0 ]]
         then
@@ -119,7 +119,7 @@ done
 
 docker run --rm --name ucp \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  -v /tmp/docker_subscription.lic:/docker_subscription.lic \
+  -v /tmp/docker_subscription.lic:/config/docker_subscription.lic \
   docker/ucp:$UCP_VERSION \
   install --controller-port 12390 --san $UCP_PUBLIC_FQDN --admin-password $UCP_ADMIN_PASSWORD --debug
 
