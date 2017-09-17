@@ -93,7 +93,6 @@ docker run \
 
 echo "UCP_PUBLIC_FQDN=$UCP_PUBLIC_FQDN"
 service docker restart
-sleep 10
 
 #docker pull docker/ucp:$UCP_VERSION
 
@@ -115,7 +114,7 @@ docker run --rm --name ucp \
   docker/ucp:$UCP_VERSION \
   install --controller-port 12390 --san $UCP_PUBLIC_FQDN --admin-password $UCP_ADMIN_PASSWORD --debug
 
-sleep 30
+sleep 15
 
 
 # 6TH SECTION - INSTALL DTR
