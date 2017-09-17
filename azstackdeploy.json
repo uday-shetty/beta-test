@@ -24,14 +24,14 @@
             }
         },
         "ucpVersion": {
-            "defaultValue": "2.2.2",
+            "defaultValue": "2.2.3",
             "type": "string",
             "metadata": {
                 "description": "UCP Version"
             }
         },
         "dtrVersion": {
-            "defaultValue": "2.3.2",
+            "defaultValue": "2.3.3",
             "type": "string",
             "metadata": {
                 "description": "DTR Version"
@@ -50,6 +50,12 @@
             "metadata": {
                 "description": "URL to download Docker EE Version (obtained from https://store.docker.com)"
             }
+        },
+	"dockerLicense": {
+            "metadata": {
+                "description": "Upload your Docker Enterprise Edition License Key"
+            },
+            "type": "SecureString"
         },
         "sshPublicKey": {
             "type": "string",
@@ -94,7 +100,7 @@
                 "Standard_D13_v2",
                 "Standard_D14_v2"
             ],
-            "defaultValue": "Standard_D2_v2",
+            "defaultValue": "Standard_D3_v2",
             "type": "string",
             "metadata": {
                 "description": "Size of the Manager VM"
@@ -190,7 +196,11 @@
             "frontEndIPConfigIDApp": "[concat(variables('manager_sub0').lbID,'/frontendIPConfigurations/LoadBalancerFrontEndApp')]",
             "lbPoolID": "[concat(variables('manager_sub0').lbID,'/backendAddressPools/BackendPool1')]",
             "lbDtrPoolID": "[concat(variables('manager_sub0').lbID,'/backendAddressPools/BackendPool2')]",
-            "lbProbeID": "[concat(variables('manager_sub0').lbID,'/probes/ucp')]"
+            "lbProbeID80": "[concat(variables('manager_sub0').lbID,'/probes/linuxapp80')]",
+            "lbProbeID443": "[concat(variables('manager_sub0').lbID,'/probes/linuxapp443')]",
+            "lbProbeIDUCP443": "[concat(variables('manager_sub0').lbID,'/probes/ucp443')]",
+            "lbProbeIDDTR443": "[concat(variables('manager_sub0').lbID,'/probes/dtr443')]",
+            "lbProbeIDDTR80": "[concat(variables('manager_sub0').lbID,'/probes/dtr80')]"
         },
         "worker": {
             "vmNamePrefix": "[concat(variables('prefix'), '-wrk')]",
@@ -206,7 +216,8 @@
         },
         "worker_sub0": {
             "lbID": "[resourceId('Microsoft.Network/loadBalancers',variables('worker').lbName)]",
-            "publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('worker').publicIPAddressName)]"
+            "publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('worker').publicIPAddressName)]",
+	    "appHostname": "[concat(variables('worker').publicIPAddressDnsName, '.', resourceGroup().location, '.', parameters('dnsFqdnSuffix'))]"
         },
         "worker_sub1": {
             "frontEndIPConfigID": "[concat(variables('worker_sub0').lbID,'/frontendIPConfigurations/LoadBalancerFrontEnd')]",
@@ -548,7 +559,7 @@
                 ],
                 "loadBalancingRules": [
                     {
-                        "name": "LBRule",
+                        "name": "LBRuleUcp",
                         "properties": {
                             "frontendIPConfiguration": {
                                 "id": "[variables('manager_sub1').frontEndIPConfigIDUcp]"
@@ -562,7 +573,7 @@
                             "enableFloatingIP": false,
                             "idleTimeoutInMinutes": 5,
                             "probe": {
-                                "id": "[variables('manager_sub1').lbProbeID]"
+                                "id": "[variables('manager_sub1').lbProbeIDUCP443]"
                             }
                         }
                     },
@@ -581,7 +592,7 @@
                             "enableFloatingIP": false,
                             "idleTimeoutInMinutes": 5,
                             "probe": {
-                                "id": "[variables('manager_sub1').lbProbeID]"
+                                "id": "[variables('manager_sub1').lbProbeIDDTR443]"
                             }
                         }
                     },
@@ -600,12 +611,12 @@
                             "enableFloatingIP": false,
                             "idleTimeoutInMinutes": 5,
                             "probe": {
-                                "id": "[variables('manager_sub1').lbProbeID]"
+                                "id": "[variables('manager_sub1').lbProbeIDDTR80]"
                             }
                         }
                     },
-                    {
-                        "name": "LBRuleApp",
+		    {
+                        "name": "LBRuleApp80",
                         "properties": {
                             "frontendIPConfiguration": {
                                 "id": "[variables('manager_sub1').frontEndIPConfigIDApp]"
@@ -619,10 +630,30 @@
                             "enableFloatingIP": false,
                             "idleTimeoutInMinutes": 5,
                             "probe": {
-                                "id": "[variables('manager_sub1').lbProbeID]"
+                                "id": "[variables('manager_sub1').lbProbeID80]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "LBRuleApp443",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[variables('manager_sub1').frontEndIPConfigIDApp]"
+                            },
+                            "backendAddressPool": {
+                                "id": "[variables('manager_sub1').lbPoolID]"
+                            },
+                            "protocol": "Tcp",
+                            "frontendPort": 443,
+                            "backendPort": 443,
+                            "enableFloatingIP": false,
+                            "idleTimeoutInMinutes": 5,
+                            "probe": {
+                                "id": "[variables('manager_sub1').lbProbeID443]"
                             }
                         }
                     }
+
                 ],
                 "probes": [
                     {
@@ -635,7 +666,7 @@
                         }
                     },
                     {
-                        "name": "ucp",
+                        "name": "ucp443",
                         "properties": {
                             "intervalInSeconds": 10,
                             "numberOfProbes": 2,
@@ -644,7 +675,7 @@
                         }
                     },
                     {
-                        "name": "dtrhttps",
+                        "name": "dtr443",
                         "properties": {
                             "intervalInSeconds": 10,
                             "numberOfProbes": 2,
@@ -653,19 +684,38 @@
                         }
                     },
                     {
-                        "name": "dtrhttp",
+                        "name": "dtr80",
                         "properties": {
                             "intervalInSeconds": 10,
                             "numberOfProbes": 2,
                             "port": 12392,
                             "protocol": "Tcp"
                         }
+                    },
+		    {
+                        "name": "linuxapp80",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "port": 80,
+                            "intervalInSeconds": 5,
+                            "numberOfProbes": 2
+                        }
+                    },
+		    {
+                        "name": "linuxapp443",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "port": 443,
+                            "intervalInSeconds": 5,
+                            "numberOfProbes": 2
+                        }
                     }
                 ]
             },
             "dependsOn": [
                 "[concat('Microsoft.Network/publicIPAddresses/', variables('manager').publicIPAddressNameUcp)]",
-                "[concat('Microsoft.Network/publicIPAddresses/', variables('manager').publicIPAddressNameDtr)]"
+                "[concat('Microsoft.Network/publicIPAddresses/', variables('manager').publicIPAddressNameDtr)]",
+                "[concat('Microsoft.Network/publicIPAddresses/', variables('manager').publicIPAddressNameApp)]"
             ]
         },
         {
@@ -944,7 +994,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat('bash install-dockeronenode.sh ', variables('manager_sub0').ucpHostname, ' ', variables('manager_sub0').dtrHostname, ' ', parameters('adminPassword'), ' ', parameters('ucpVersion'), ' ', parameters('dtrVersion'), ' ', parameters('dockerVersion'), ' ', parameters('dockerEEurl'), ' ', reference(variables('nicName')).ipConfigurations[0].properties.privateIPAddress)]"
+                    "commandToExecute": "[concat('bash install-dockeronenode.sh ', variables('manager_sub0').ucpHostname, ' ', variables('manager_sub0').dtrHostname, ' ', parameters('adminPassword'), ' ', parameters('ucpVersion'), ' ', parameters('dtrVersion'), ' ', parameters('dockerVersion'), ' ', parameters('dockerEEurl'), ' ', parameters('dockerLicense'), ' ', reference(variables('nicName')).ipConfigurations[0].properties.privateIPAddress)]"
                 }
             },
             "dependsOn": [
@@ -990,21 +1040,33 @@
             "type": "string",
             "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('manager').publicIPAddressNameUcp)).ipAddress]"
         },
-        "mgr_ucp_hostname": {
+        "UCPLoginURL": {
             "type": "string",
-            "value": "[variables('manager_sub0').ucpHostname]"
+            "value": "[concat('https://', variables('manager_sub0').ucpHostname)]"
         },
         "mgr_dtr_pip": {
             "type": "string",
             "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('manager').publicIPAddressNameDtr)).ipAddress]"
         },
-        "mgr_dtr_hostname": {
+        "DTRLoginURL": {
             "type": "string",
-            "value": "[variables('manager_sub0').dtrHostname]"
+            "value": "[concat('https://', variables('manager_sub0').dtrHostname)]"
         },
-        "wrk_pip": {
+        "linux_app_pip": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('manager').publicIPAddressNameApp)).ipAddress]"
+        },
+        "LinuxAppURL": {
+            "type": "string",
+            "value": "[concat('http://', variables('manager_sub0').appHostname)]"
+        },
+        "win_app_pip": {
             "type": "string",
             "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('worker').publicIPAddressName)).ipAddress]"
+        },
+        "WindowsAppURL": {
+            "type": "string",
+            "value": "[concat('http://', variables('worker_sub0').appHostName)]"
         },
         "masterPrivateIP": {
             "type": "string",

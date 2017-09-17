@@ -50,10 +50,6 @@ if [ -z "$DOCKER_EE_URL" ]; then
     exit 1
 fi
 
-if [ "$DOCKER_LICENSE" != "" ]; then
-    LIC_FILE=/tmp/docker_subscription.lic
-    echo "$DOCKER_LICENSE" >> $LIC_FILE
-fi
 
 
 # 3RD SECTION - INSTALL DOCKER EE
@@ -75,6 +71,7 @@ add-apt-repository \
 apt-get update
 apt-get install -y docker-ee
 
+service docker restart
 sleep 10
 
 # 4TH SECTION - run meta container
@@ -91,10 +88,21 @@ docker run \
 
 # 5TH SECTION - INSTALL UCP
 
-echo "UCP_PUBLIC_FQDN=$UCP_PUBLIC_FQDN"
-service docker restart
+if [ "$DOCKER_LICENSE" != "" ]; then
+    	LIC_FILE=/tmp/docker_subscription.lic
+    	echo "$DOCKER_LICENSE" >> $LIC_FILE
+	jq -e '.|{key_id}' $LIC_FILE >> /dev/null
+       	if [[ $? -eq 0 ]]
+        then
+        	echo "valid license "
+        else 
+		echo "License input must be a valid JSON license key. Please upload license in UI after installation."
+        fi
+else
+        echo "Unable to read license file. Please upload license in UI after installation."
 
-#docker pull docker/ucp:$UCP_VERSION
+fi
+
 
 #Download Docker UCP images
 images=$(docker run --rm $UCP_IMAGE images --list $IMAGE_LIST_ARGS)
@@ -114,8 +122,13 @@ docker run --rm --name ucp \
   docker/ucp:$UCP_VERSION \
   install --controller-port 12390 --san $UCP_PUBLIC_FQDN --admin-password $UCP_ADMIN_PASSWORD --debug
 
-sleep 15
+# Check if UCP is installed, if not sleep for 15
+if [[ $(curl --insecure --silent --output /dev/null --write-out '%{http_code}' https://"$UCP_PUBLIC_FQDN"/_ping) -ne 200 ]];
+then
+	sleep 15
+fi
 
+/bin/rm -rf /tmp/docker_subscription.lic
 
 # 6TH SECTION - INSTALL DTR
 
