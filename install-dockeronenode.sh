@@ -15,7 +15,9 @@ DOCKER_VERSION=$6
 echo "DOCKER_VERSION: $DOCKER_VERSION"
 DOCKER_EE_URL=$7
 echo "DOCKER_EE_URL: $DOCKER_EE_URL"
-PRIVATE_IP=$8
+DOCKER_LICENSE=$8
+echo "DOCKER_LICENSE: $DOCKER_LICENSE"
+PRIVATE_IP=$9
 echo "PRIVATE_IP: $PRIVATE_IP"
 
 PRODUCTION_UCP_ORG='docker'
@@ -41,6 +43,16 @@ fi
 if [ -z "$DTR_PUBLIC_FQDN" ]; then
     echo 'DTR_PUBLIC_FQDN is undefined'
     exit 1
+fi
+
+if [ -z "$DOCKER_EE_URL" ]; then
+    echo 'DOCKER_EE_URL is undefined'
+    exit 1
+fi
+
+if [ "$DOCKER_LICENSE" != "" ]; then
+    LIC_FILE=/tmp/docker_subscription.lic
+    echo "$DOCKER_LICENSE" >> $LIC_FILE
 fi
 
 
@@ -99,6 +111,7 @@ done
 
 docker run --rm --name ucp \
   -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /tmp/docker_subscription.lic:/docker_subscription.lic \
   docker/ucp:$UCP_VERSION \
   install --controller-port 12390 --san $UCP_PUBLIC_FQDN --admin-password $UCP_ADMIN_PASSWORD --debug
 
