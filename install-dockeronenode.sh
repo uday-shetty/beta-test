@@ -54,6 +54,7 @@ fi
 
 # 3RD SECTION - INSTALL DOCKER EE
 
+apt-get -y install jq
 apt-get update
 apt-get install dialog apt-utils
 apt-get install -y --no-install-recommends \
