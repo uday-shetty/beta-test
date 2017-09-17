@@ -19,7 +19,7 @@ function Join-Swarm() {
 
 	$Url = -join("http://", $LeaderIP, ":9024/token/worker/")
 	Write-Host "Using URL: $Url"
-	Start-Sleep -Seconds 20
+	Start-Sleep -Seconds 5
 	$Stream = ([System.Net.WebRequest]::Create($Url)).GetResponse().GetResponseStream()
 	$StreamReader = new-object System.IO.StreamReader $Stream
 	$Token = $StreamReader.ReadToEnd()
