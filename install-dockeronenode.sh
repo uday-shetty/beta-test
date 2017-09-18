@@ -129,7 +129,7 @@ then
 	sleep 15
 fi
 
-/bin/rm -rf /tmp/docker_subscription.lic
+#/bin/rm -rf /tmp/docker_subscription.lic
 
 # 6TH SECTION - INSTALL DTR
 
@@ -137,7 +137,6 @@ if [ -z "$UCP_NODE"]; then
   export UCP_NODE=$(docker node ls | grep mgr0 | awk '{print $3}');
 fi
 
-#docker pull docker/dtr:$DTR_VERSION
 
 docker run --rm \
   docker/dtr:$DTR_VERSION install \
