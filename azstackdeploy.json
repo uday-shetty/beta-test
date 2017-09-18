@@ -242,6 +242,7 @@
         "sshKeyPath": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
 	"nicName": "[concat(variables('manager').nicNamePrefix, '0')]",
 	"scriptDependency": "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(variables('manager').vmNamePrefix, '0'), 'mgr_scriptextension')]",
+	"ddcLicense": "[base64(string(parameters('dockerLicense')))]",
         "vhdContainerName": "vhd"
     },
     "resources": [
