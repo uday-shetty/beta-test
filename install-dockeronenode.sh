@@ -129,7 +129,7 @@ then
 	sleep 15
 fi
 
-#/bin/rm -rf /tmp/docker_subscription.lic
+/bin/rm -rf /tmp/docker_subscription.lic
 
 # 6TH SECTION - INSTALL DTR
 
