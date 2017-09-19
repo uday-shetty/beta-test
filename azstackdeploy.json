@@ -151,11 +151,6 @@
 	},
         "dnsFqdnSuffix": {
             "defaultValue": "cloudapp.azurestack.external",
-            "allowedValues": [
-                "cloudapp.azurestack.external",
-                "cloudapp.azure.com",
-                "cloudapp.usgovcloudapi.net"
-            ],
             "type": "string"
         },
         "artifactBaseUri": {
