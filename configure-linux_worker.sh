@@ -6,7 +6,9 @@ UCP_VERSION=$2
 echo "UCP_VERSION: $UCP_VERSION"
 DOCKER_VERSION=$3
 echo "DOCKER_VERSION: $DOCKER_VERSION"
-PRIVATE_IP=$4
+DOCKER_EE_URL=$4
+echo "DOCKER_EE_URL: $DOCKER_EE_URL"
+PRIVATE_IP=$5
 echo "PRIVATE_IP: $PRIVATE_IP"
 
 #  SECTION - CHECK VARIABLES EXIST
@@ -18,11 +20,6 @@ fi
 
 if [ -z "$UCP_VERSION" ]; then
     echo 'UCP_VERSION is undefined'
-    #exit 1
-fi
-
-if [ -z "$UCP_PUBLIC_FQDN" ]; then
-    echo 'UCP_PUBLIC_FQDN is undefined'
     #exit 1
 fi
 
@@ -55,8 +52,7 @@ sleep 10
 
 docker pull docker/ucp-agent:$UCP_VERSION
 
-Url=http://$LeaderIP:9024/token/worker/
-echo "URL: $Url"
-sleep (20)
-JoinTarget=$LeaderIP:2377
+Token=$(curl http://$PRIVATE_IP:9024/token/worker/)
+echo "TOKEN: $token"
+JoinTarget=$PRIVATE_IP:2377
 docker swarm join --token $Token $JoinTarget
