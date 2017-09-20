@@ -990,7 +990,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat('bash install-dockeronenode.sh ', variables('manager_sub0').ucpHostname, ' ', variables('manager_sub0').dtrHostname, ' ', parameters('adminPassword'), ' ', parameters('ucpVersion'), ' ', parameters('dtrVersion'), ' ', parameters('dockerVersion'), ' ', parameters('dockerEEurl'), ' ', variables('ddcLicense'), ' ', reference(variables('nicName')).ipConfigurations[0].properties.privateIPAddress)]"
+                    "commandToExecute": "[concat('bash install-dockeronenode.sh ', variables('manager_sub0').ucpHostname, ' ', variables('manager_sub0').dtrHostname, ' ', parameters('adminPassword'), ' ', parameters('ucpVersion'), ' ', parameters('dtrVersion'), ' ', parameters('dockerVersion'), ' ', parameters('dockerEEurl'), ' ', variables('ddcLicense'), ' ', variables('manager_sub0').appHostname, ' ', reference(variables('nicName')).ipConfigurations[0].properties.privateIPAddress)]"
                 }
             },
             "dependsOn": [
