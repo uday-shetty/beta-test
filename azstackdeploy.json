@@ -438,7 +438,7 @@
                             "access": "Allow",
                             "description": "Allow UCP",
                             "destinationAddressPrefix": "*",
-                            "destinationPortRange": "12390",
+                            "destinationPortRange": "443",
                             "direction": "Inbound",
                             "priority": 206,
                             "protocol": "Tcp",
@@ -667,7 +667,7 @@
                             },
                             "protocol": "Tcp",
                             "frontendPort": 443,
-                            "backendPort": 12390,
+                            "backendPort": 443,
                             "enableFloatingIP": false,
                             "idleTimeoutInMinutes": 5,
                             "probe": {
@@ -729,7 +729,7 @@
                         "properties": {
                             "intervalInSeconds": 10,
                             "numberOfProbes": 2,
-                            "port": 12390,
+                            "port": 443,
                             "protocol": "Tcp"
                         }
                     },
