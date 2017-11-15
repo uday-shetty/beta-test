@@ -24,14 +24,14 @@
             }
         },
         "ucpVersion": {
-            "defaultValue": "2.2.3",
+            "defaultValue": "2.2.4",
             "type": "string",
             "metadata": {
                 "description": "UCP Version"
             }
         },
         "dtrVersion": {
-            "defaultValue": "2.3.3",
+            "defaultValue": "2.4.0",
             "type": "string",
             "metadata": {
                 "description": "DTR Version"
@@ -438,7 +438,7 @@
                             "access": "Allow",
                             "description": "Allow UCP",
                             "destinationAddressPrefix": "*",
-                            "destinationPortRange": "443",
+                            "destinationPortRange": "12390",
                             "direction": "Inbound",
                             "priority": 206,
                             "protocol": "Tcp",
@@ -667,7 +667,7 @@
                             },
                             "protocol": "Tcp",
                             "frontendPort": 443,
-                            "backendPort": 443,
+                            "backendPort": 12390,
                             "enableFloatingIP": false,
                             "idleTimeoutInMinutes": 5,
                             "probe": {
@@ -729,7 +729,7 @@
                         "properties": {
                             "intervalInSeconds": 10,
                             "numberOfProbes": 2,
-                            "port": 443,
+                            "port": 12390,
                             "protocol": "Tcp"
                         }
                     },
