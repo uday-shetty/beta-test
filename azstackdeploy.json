@@ -288,9 +288,9 @@
         "storageAccountName": "[concat(variables('prefix'),uniqueString(concat(resourceGroup().id, '0')))]",
         "storageAccountType": "Standard_LRS",
         "storageLocation": "[resourceGroup().location]",
-        "managerAddressPrefix": "172.0.0.0/16",
+        "managerAddressPrefix": "10.0.0.0/16",
         "subnetName": "Cluster",
-        "subnetPrefix": "172.0.0.0/24",
+        "subnetPrefix": "10.0.144.0/24",
         "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables ('subnetName'))]",
         "publicIPAddressType": "Static",
         "vnetName": "[concat(variables('prefix'), '_vnet')]",
@@ -492,7 +492,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[concat('172.0.0.', add(5, copyindex()))]",
+                            "privateIPAddress": "[concat('10.0.144.', add(5, copyindex()))]",
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
                             },
@@ -530,7 +530,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[concat('172.0.0.', add(variables('manager').count, add(5, copyindex())))]",
+                            "privateIPAddress": "[concat('10.0.144.', add(variables('manager').count, add(5, copyindex())))]",
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
                             },
@@ -568,7 +568,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[concat('172.0.0.', add(variables('manager').count, add(9, copyindex())))]",
+                            "privateIPAddress": "[concat('10.0.144.', add(variables('manager').count, add(9, copyindex())))]",
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
                             },
