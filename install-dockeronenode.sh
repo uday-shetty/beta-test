@@ -25,8 +25,8 @@ echo "PRIVATE_IP: $PRIVATE_IP"
 PRODUCTION_UCP_ORG='docker'
 UCP_ORG=${UCP_ORG:-"docker"}
 UCP_IMAGE=${UCP_ORG}/ucp:${UCP_VERSION}
-DTR_ORG=${DTR_ORG:-"docker"}
-DTR_IMAGE=${DTR_ORG}/dtr:${DTR_VERSION}
+#DTR_ORG=${DTR_ORG:-"docker"}
+#DTR_IMAGE=${DTR_ORG}/dtr:${DTR_VERSION}
 IMAGE_LIST_ARGS=''
 
 
@@ -114,10 +114,10 @@ for im in $images; do
 done
 
 #Download DTR images
-images=$(docker run --rm $DTR_IMAGE images)
-for im in $images; do
-    docker pull $im
-done
+#images=$(docker run --rm $DTR_IMAGE images)
+#for im in $images; do
+#    docker pull $im
+#done
 
 docker run --rm --name ucp \
   -v /var/run/docker.sock:/var/run/docker.sock \
@@ -135,17 +135,17 @@ fi
 
 # 6TH SECTION - INSTALL DTR
 
-if [ -z "$UCP_NODE"]; then
-  export UCP_NODE=$(docker node ls | grep mgr0 | awk '{print $3}');
-fi
-
-
-docker run --rm \
-  docker/dtr:$DTR_VERSION install \
-  --replica-http-port 12392 \
-  --replica-https-port 12391 \
-  --ucp-url $UCP_PUBLIC_FQDN \
-  --ucp-node $UCP_NODE \
-  --dtr-external-url $DTR_PUBLIC_FQDN \
-  --ucp-username admin --ucp-password $UCP_ADMIN_PASSWORD \
-  --ucp-insecure-tls 
+#if [ -z "$UCP_NODE"]; then
+#  export UCP_NODE=$(docker node ls | grep mgr0 | awk '{print $3}');
+#fi
+#
+#
+#docker run --rm \
+#  docker/dtr:$DTR_VERSION install \
+#  --replica-http-port 12392 \
+#  --replica-https-port 12391 \
+#  --ucp-url $UCP_PUBLIC_FQDN \
+#  --ucp-node $UCP_NODE \
+#  --dtr-external-url $DTR_PUBLIC_FQDN \
+#  --ucp-username admin --ucp-password $UCP_ADMIN_PASSWORD \
+#  --ucp-insecure-tls 
