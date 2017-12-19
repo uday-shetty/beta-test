@@ -56,23 +56,15 @@ fi
 
 # 3RD SECTION - INSTALL DOCKER EE
 
-apt-get -y install jq
-apt-get update
-apt-get install dialog apt-utils
-apt-get install -y --no-install-recommends \
-    linux-image-extra-$(uname -r) \
-    linux-image-extra-virtual \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    software-properties-common
-curl -fsSL $DOCKER_EE_URL/ubuntu/gpg | apt-key add -
-add-apt-repository \
-   "deb [arch=amd64] $DOCKER_EE_URL/ubuntu \
+add-apt-repository "deb [arch=amd64] $DOCKER_EE_URL/ubuntu \
    $(lsb_release -cs) \
-   stable-$DOCKER_VERSION"
+   $DOCKER_VERSION"
+
+curl -fsSL $DOCKER_EE_URL/ubuntu/gpg | sudo apt-key add -
+
 apt-get update
-apt-get install -y docker-ee
+
+apt-get install docker-ee
 
 service docker restart
 sleep 10
