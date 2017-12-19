@@ -25,6 +25,8 @@ fi
 
 
 #  SECTION - INSTALL DOCKER
+apt-get -y install jq
+
 add-apt-repository "deb [arch=amd64] $DOCKER_EE_URL/ubuntu \
    $(lsb_release -cs) \
    $DOCKER_VERSION"
@@ -33,7 +35,7 @@ curl -fsSL $DOCKER_EE_URL/ubuntu/gpg | sudo apt-key add -
 
 apt-get update
 
-apt-get install docker-ee
+apt-get install -y docker-ee
 
 service docker restart
 

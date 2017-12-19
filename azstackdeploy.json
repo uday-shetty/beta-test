@@ -193,11 +193,11 @@
             }
 	},
         "dnsFqdnSuffix": {
-            "defaultValue": "cloudapp.azurestack.external",
+            "defaultValue": "cloudapp.azure.com",
             "type": "string"
         },
         "artifactBaseUri": {
-            "defaultValue": "https://raw.githubusercontent.com/uday-shetty/azurestack-test/master/",
+            "defaultValue": "https://raw.githubusercontent.com/uday-shetty/beta-test/master/",
             "type": "string"
         }
     },
