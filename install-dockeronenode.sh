@@ -21,9 +21,13 @@ APP_ELB_HOSTNAME=$9
 echo "APP_ELB_HOSTNAME: $APP_ELB_HOSTNAME"
 PRIVATE_IP=${10}
 echo "PRIVATE_IP: $PRIVATE_IP"
+HUB_USERNAME=${11}
+echo "HUB_USERNAME: $HUB_USERNAME"
+HUB_PASSWD=${12}
+echo "HUB_PASSWD: $HUB_PASSWD"
 
 PRODUCTION_UCP_ORG='docker'
-UCP_ORG=${UCP_ORG:-"docker"}
+UCP_ORG=${UCP_ORG:-"dockereng"}
 UCP_IMAGE=${UCP_ORG}/ucp:${UCP_VERSION}
 #DTR_ORG=${DTR_ORG:-"docker"}
 #DTR_IMAGE=${DTR_ORG}/dtr:${DTR_VERSION}
@@ -113,10 +117,14 @@ done
 #    docker pull $im
 #done
 
+docker login -p $HUB_PASSWD -u $HUB_USERNAME
+
+docker run dockereng/ucp:$UCP_VERSION images --list --image-version dev: | xargs -L 1 docker pull
+
 docker run --rm --name ucp \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v /tmp/docker_subscription.lic:/config/docker_subscription.lic \
-  docker/ucp:$UCP_VERSION \
+  dockereng/ucp:$UCP_VERSION \
   install --controller-port 443 --san $UCP_PUBLIC_FQDN --external-service-lb $APP_ELB_HOSTNAME --admin-password $UCP_ADMIN_PASSWORD
 
 # Check if UCP is installed, if not sleep for 15

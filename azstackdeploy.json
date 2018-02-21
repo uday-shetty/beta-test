@@ -23,6 +23,18 @@
                 "description": "Admin password for VM and UCP"
             }
         },
+        "hubUsername": {
+            "type": "string",
+            "metadata": {
+                "description": "username for Docker Hub"
+            }
+        },
+        "hubPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "password for Docker Hub"
+            }
+        },
         "ucpVersion": {
             "defaultValue": "3.0.0-beta1",
             "type": "string",
@@ -1247,7 +1259,7 @@
                     ]
                 },
                 "protectedSettings": {
-			 "commandToExecute": "[concat('bash configure-linux_worker.sh ', variables('manager_sub0').ucpHostname, ' ', parameters('ucpVersion'), ' ', parameters('dockerVersion'), ' ', parameters('dockerEEurl'), ' ', reference(variables('nicName')).ipConfigurations[0].properties.privateIPAddress)]"
+			 "commandToExecute": "[concat('bash configure-linux_worker.sh ', variables('manager_sub0').ucpHostname, ' ', parameters('ucpVersion'), ' ', parameters('dockerVersion'), ' ', parameters('dockerEEurl'), ' ', reference(variables('nicName')).ipConfigurations[0].properties.privateIPAddress, ' ', parameters('hubUsername'), ' ', parameters('hubPassword'))]"
                 }
             },
             "dependsOn": [
