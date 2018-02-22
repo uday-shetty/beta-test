@@ -1228,7 +1228,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat('bash install-dockeronenode.sh ', variables('manager_sub0').ucpHostname, ' ', variables('manager_sub0').dtrHostname, ' ', parameters('adminPassword'), ' ', parameters('ucpVersion'), ' ', parameters('dtrVersion'), ' ', parameters('dockerVersion'), ' ', parameters('dockerEEurl'), ' ', variables('ddcLicense'), ' ', variables('linux_worker_sub0').appHostname, ' ', reference(variables('nicName')).ipConfigurations[0].properties.privateIPAddress)]"
+                    "commandToExecute": "[concat('bash install-dockeronenode.sh ', variables('manager_sub0').ucpHostname, ' ', variables('manager_sub0').dtrHostname, ' ', parameters('adminPassword'), ' ', parameters('ucpVersion'), ' ', parameters('dtrVersion'), ' ', parameters('dockerVersion'), ' ', parameters('dockerEEurl'), ' ', variables('ddcLicense'), ' ', variables('linux_worker_sub0').appHostname, ' ', reference(variables('nicName')).ipConfigurations[0].properties.privateIPAddress, ' ', parameters('hubUsername'), ' ', parameters('hubPassword'))]"
                 }
             },
             "dependsOn": [
@@ -1259,7 +1259,7 @@
                     ]
                 },
                 "protectedSettings": {
-			 "commandToExecute": "[concat('bash configure-linux_worker.sh ', variables('manager_sub0').ucpHostname, ' ', parameters('ucpVersion'), ' ', parameters('dockerVersion'), ' ', parameters('dockerEEurl'), ' ', reference(variables('nicName')).ipConfigurations[0].properties.privateIPAddress, ' ', parameters('hubUsername'), ' ', parameters('hubPassword'))]"
+			 "commandToExecute": "[concat('bash configure-linux_worker.sh ', variables('manager_sub0').ucpHostname, ' ', parameters('ucpVersion'), ' ', parameters('dockerVersion'), ' ', parameters('dockerEEurl'), ' ', reference(variables('nicName')).ipConfigurations[0].properties.privateIPAddress)]"
                 }
             },
             "dependsOn": [
