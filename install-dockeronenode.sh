@@ -119,12 +119,13 @@ done
 
 docker login -p $HUB_PASSWD -u $HUB_USERNAME
 
-docker run dockereng/ucp:$UCP_VERSION images --list --image-version dev: | xargs -L 1 docker pull
+for i in $(docker run --rm dockereng/ucp:$UCP_VERSION images --list --image-version dev: ) ; do docker pull $i; done
+
 
 docker run --rm --name ucp \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v /tmp/docker_subscription.lic:/config/docker_subscription.lic \
-  dockereng/ucp:$UCP_VERSION \
+  dockereng/ucp:$UCP_VERSION  --image-version dev: \
   install --controller-port 443 --san $UCP_PUBLIC_FQDN --external-service-lb $APP_ELB_HOSTNAME --admin-password $UCP_ADMIN_PASSWORD
 
 # Check if UCP is installed, if not sleep for 15
