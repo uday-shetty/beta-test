@@ -1259,7 +1259,7 @@
                     ]
                 },
                 "protectedSettings": {
-			 "commandToExecute": "[concat('bash configure-linux_worker.sh ', variables('manager_sub0').ucpHostname, ' ', parameters('ucpVersion'), ' ', parameters('dockerVersion'), ' ', parameters('dockerEEurl'), ' ', reference(variables('nicName')).ipConfigurations[0].properties.privateIPAddress)]"
+			 "commandToExecute": "[concat('bash configure-linux_worker.sh ', variables('manager_sub0').ucpHostname, ' ', parameters('ucpVersion'), ' ', parameters('dockerVersion'), ' ', parameters('dockerEEurl'), ' ', reference(variables('nicName')).ipConfigurations[0].properties.privateIPAddress, ' ', parameters('hubUsername'), ' ', parameters('hubPassword'))]"
                 }
             },
             "dependsOn": [
