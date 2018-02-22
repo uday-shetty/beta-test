@@ -10,6 +10,10 @@ DOCKER_EE_URL=$4
 echo "DOCKER_EE_URL: $DOCKER_EE_URL"
 PRIVATE_IP=$5
 echo "PRIVATE_IP: $PRIVATE_IP"
+HUB_USERNAME=$6
+echo "HUB_USERNAME: $HUB_USERNAME"
+HUB_PASSWD=$7
+echo "HUB_PASSWD: $HUB_PASSWD"
 
 #  SECTION - CHECK VARIABLES EXIST
 
@@ -45,7 +49,9 @@ sleep 10
 
 #install UCP agents
 
-docker pull docker/ucp-agent:$UCP_VERSION
+docker login -p $HUB_PASSWD -u $HUB_USERNAME
+
+docker pull docker/ucp-agent:$UCP_VERSION --image-version dev:
 
 Token=$(curl http://$PRIVATE_IP:9024/token/worker/)
 echo "TOKEN: $token"
