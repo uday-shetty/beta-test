@@ -51,7 +51,7 @@ sleep 10
 
 docker login -p $HUB_PASSWD -u $HUB_USERNAME
 
-docker pull docker/ucp-agent:$UCP_VERSION --image-version dev:
+docker pull dockereng/ucp-agent:$UCP_VERSION 
 
 Token=$(curl http://$PRIVATE_IP:9024/token/worker/)
 echo "TOKEN: $token"
