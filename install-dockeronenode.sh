@@ -126,7 +126,7 @@ docker run --rm --name ucp \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v /tmp/docker_subscription.lic:/config/docker_subscription.lic \
   dockereng/ucp:$UCP_VERSION \
-  install --swarm-port 3376 --image-version dev: \
+  install --image-version dev: \
   --controller-port 443 --san $UCP_PUBLIC_FQDN --external-service-lb $APP_ELB_HOSTNAME --admin-password $UCP_ADMIN_PASSWORD
 
 # Check if UCP is installed, if not sleep for 15
