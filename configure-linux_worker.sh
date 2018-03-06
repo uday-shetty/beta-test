@@ -54,6 +54,6 @@ docker login -p $HUB_PASSWD -u $HUB_USERNAME
 docker pull dockereng/ucp-agent:$UCP_VERSION 
 
 Token=$(curl http://$PRIVATE_IP:9024/token/worker/)
-echo "TOKEN: $token"
+echo "TOKEN: $Token"
 JoinTarget=$PRIVATE_IP:2377
 docker swarm join --token $Token $JoinTarget
